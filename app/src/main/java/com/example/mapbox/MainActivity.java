@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onStyleLoaded(@NonNull Style style) {
                 mapboxMap.addOnMapClickListener(MainActivity.this);
                 markerViewManager = new MarkerViewManager(mapView, mapboxMap);
-                buildingPlugin3d(style);
+                buildingPlugin3D(style);
                 addView();
                 addImage(style);
             }
@@ -102,12 +102,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     private void addImage(Style style) {
-        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(20.996280, 105.826810))).setTitle("PiraGo");
-        //add Image
-        LatLngQuad quad = new LatLngQuad(new LatLng(25.7836, -80.11725),
-                new LatLng(25.783548, -80.1397431334),
-                new LatLng(25.7680, -80.13964),
-                new LatLng(25.76795, -80.11725));
+        LatLngQuad quad = new LatLngQuad(new LatLng(25.7836, 80.11725),
+                new LatLng(25.783548, 80.1397431334),
+                new LatLng(25.7680, 80.13964),
+                new LatLng(25.76795, 80.11725));
         style.addSource(new ImageSource(ID_IMAGE_SOURCE, quad, R.drawable.logo));
         style.addLayer(new RasterLayer(ID_IMAGE_LAYER, ID_IMAGE_SOURCE));
     }
@@ -123,12 +121,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btn1.setTextColor(getColor(R.color.colorPrimaryDark));
         markerView = new MarkerView(new LatLng(20.996280, 105.826810), customView);
         markerViewManager.addMarker(markerView);
+        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(20.996280, 105.826810))).setTitle("PiraGo");
         btn.setOnClickListener(this);
         btn1.setOnClickListener(this);
     }
 
-    private void buildingPlugin3d(Style style) {
-        //building plugin
+    private void buildingPlugin3D(Style style) {
         buildingPlugin = new BuildingPlugin(mapView, mapboxMap, style);
         buildingPlugin.setMinZoomLevel(15f);
         buildingPlugin.setVisibility(true);
@@ -204,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 break;
             case R.id.btn1:
-                CameraPosition cameraPosition1 = new CameraPosition.Builder().target(new LatLng(25.783548, -80.1397431334)).zoom(10).tilt(20).build();
+                CameraPosition cameraPosition1 = new CameraPosition.Builder().target(new LatLng(25.783548, 80.1397431334)).zoom(10).tilt(20).build();
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition1));
                 break;
         }
