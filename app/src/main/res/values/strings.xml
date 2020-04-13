@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MapBox</string>
+    <string name="line_distance_textview" >Distance </string>
+    <string name="line_distance_tap_instruction" >Distance</string>
+    <string name="ACCESS_TOKEN">pk.eyJ1IjoidmluaG5ndXllbjAwMTEwMSIsImEiOiJjazhtdHR3amkwZm1wM21uc2ptdHVueDJ2In0.ihDe_tGKr2ui9tM7MBXJbw</string>
+    <string name="move_map_around_instruction">move map around instruction</string>
+    <string name="user_location_permission_explanation">user location permission explanation</string>
+    <string name="user_location_permission_not_granted">user location permission not granted</string>
 </resources>
