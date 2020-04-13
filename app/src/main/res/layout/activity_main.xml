@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <com.mapbox.mapboxsdk.maps.MapView
@@ -18,15 +17,5 @@
         mapbox:layout_constraintTop_toTopOf="parent"
         mapbox:mapbox_cameraTargetLat="21.3011229"
         mapbox:mapbox_cameraTargetLng="-157.851376"
-        mapbox:mapbox_cameraZoom="12" />
-
-    <TextView
-        android:id="@+id/straight_line_distance_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        mapbox:layout_constraintBottom_toBottomOf="parent"
-        mapbox:layout_constraintEnd_toEndOf="parent"
-        mapbox:layout_constraintStart_toStartOf="@+id/mapView"
-        mapbox:layout_constraintTop_toTopOf="@+id/mapView" />
-</LinearLayout>
+        mapbox:mapbox_cameraZoom="18" />
+</androidx.constraintlayout.widget.ConstraintLayout>

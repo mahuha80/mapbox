@@ -3,57 +3,38 @@ package com.example.mapbox;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.LayoutInflater;
+import android.view.View;
 
-import com.mapbox.android.core.permissions.PermissionsListener;
-import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.LineString;
-import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.location.LocationComponent;
-import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
-import com.mapbox.mapboxsdk.location.modes.CameraMode;
-import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.style.layers.CircleLayer;
-import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.plugins.building.BuildingPlugin;
+import com.mapbox.mapboxsdk.plugins.markerview.MarkerView;
+import com.mapbox.mapboxsdk.plugins.markerview.MarkerViewManager;
+import com.mapbox.mapboxsdk.style.layers.FillExtrusionLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.mapbox.turf.TurfMeasurement;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.net.URI;
+import java.net.URISyntaxException;
 
-import static com.mapbox.mapboxsdk.style.layers.Property.LINE_JOIN_ROUND;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
-import static com.mapbox.turf.TurfConstants.UNIT_METERS;
+import static com.mapbox.mapboxsdk.style.expressions.Expression.get;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillExtrusionBase;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillExtrusionColor;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillExtrusionHeight;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillExtrusionOpacity;
 
-public class MainActivity extends AppCompatActivity implements
-        PermissionsListener, MapboxMap.OnCameraMoveListener {
-
-    private static final String DISTANCE_SOURCE_ID = "DISTANCE_SOURCE_ID";
-    private static final String DISTANCE_LINE_LAYER_ID = "DISTANCE_LINE_LAYER_ID";
-    private static final int LINE_COLOR = Color.RED;
-    private static final float LINE_WIDTH = 2f;
-
-    private PermissionsManager permissionsManager;
-    private List<Point> pointList;
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, Style.OnStyleLoaded {
     private MapView mapView;
+    private BuildingPlugin buildingPlugin;
     private MapboxMap mapboxMap;
-    private TextView distanceTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,127 +43,53 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-
-                MainActivity.this.mapboxMap = mapboxMap;
-
-                mapboxMap.setStyle(new Style.Builder()
-                                .fromUri(Style.DARK)
-                                .withSource(new GeoJsonSource(DISTANCE_SOURCE_ID))
-                                .withLayer(new LineLayer(DISTANCE_LINE_LAYER_ID, DISTANCE_SOURCE_ID).withProperties(
-                                        lineColor(LINE_COLOR),
-                                        lineWidth(LINE_WIDTH),
-                                        lineJoin(LINE_JOIN_ROUND))), new Style.OnStyleLoaded() {
-                            @Override
-                            public void onStyleLoaded(@NonNull Style style) {
-                                enableLocationComponent(style);
-
-                                MainActivity.this.mapboxMap
-                                        .addOnCameraMoveListener(MainActivity.this);
-
-                                distanceTextView = findViewById(R.id.straight_line_distance_textview);
-                                distanceTextView.setTextColor(Color.RED);
-
-                                Toast.makeText(MainActivity.this,
-                                        getString(R.string.move_map_around_instruction), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                );
-            }
-        });
+        mapView.getMapAsync(this);
     }
 
     @Override
-    public void onCameraMove() {
-        redrawLine(mapboxMap.getCameraPosition().target);
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        MainActivity.this.mapboxMap = mapboxMap;
+        mapboxMap.setStyle(Style.MAPBOX_STREETS, this);
+        MarkerViewManager markerViewManager = new MarkerViewManager(mapView, mapboxMap);
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_view, null, false);
+        MarkerView markerView = new MarkerView(new LatLng(21.3011229, -157.851376), view);
+        LocationO locationO = getNewLatLong(21.3011229, -157.851376);
+        MarkerView markerView1 = new MarkerView(new LatLng(locationO.getLatitude(), locationO.getLongtidute()), view);
+        LocationO locationO1 = getNewLatLong(locationO.getLatitude(), locationO.getLongtidute());
+        MarkerView markerView2 = new MarkerView(new LatLng(locationO1.getLatitude(), locationO1.getLongtidute()), view);
+        markerViewManager.addMarker(markerView1);
     }
 
-    private void redrawLine(@NonNull LatLng targetLatLng) {
-        mapboxMap.getStyle(new Style.OnStyleLoaded() {
-            @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                GeoJsonSource geoJsonSource = style.getSourceAs(DISTANCE_SOURCE_ID);
-                if (geoJsonSource != null) {
-                    pointList = new ArrayList<>();
-                    Location lastKnownLocation = mapboxMap.getLocationComponent().getLastKnownLocation();
-                    if (lastKnownLocation != null) {
-
-// Add the start and ending points to the straight line
-                        Point targetPoint = Point.fromLngLat(targetLatLng.getLongitude(), targetLatLng.getLatitude());
-                        Point deviceLocationPoint = Point.fromLngLat(lastKnownLocation.getLongitude(),
-                                lastKnownLocation.getLatitude());
-                        pointList.add(targetPoint);
-                        pointList.add(deviceLocationPoint);
-
-// Update the source with the new LineString line
-                        geoJsonSource.setGeoJson(LineString.fromLngLats(pointList));
-
-// Update the TextView with the new straight line distance
-                        double distanceBetweenDeviceAndTarget = TurfMeasurement.distance(deviceLocationPoint,
-                                targetPoint, UNIT_METERS);
-
-                        distanceTextView.setText(String.format("%s meters", String.valueOf(
-                                NumberFormat.getNumberInstance(Locale.US).format(distanceBetweenDeviceAndTarget))));
-                    }
-                }
-            }
-        });
-    }
-
-    @SuppressWarnings({"MissingPermission"})
-    private void enableLocationComponent(@NonNull Style loadedMapStyle) {
-// Check if permissions are enabled and if not request
-        if (PermissionsManager.areLocationPermissionsGranted(this)) {
-
-// Get an instance of the component
-            LocationComponent locationComponent = mapboxMap.getLocationComponent();
-
-// Activate with options
-            locationComponent.activateLocationComponent(
-                    LocationComponentActivationOptions.builder(this, loadedMapStyle).build());
-
-// Enable to make component visible
-            locationComponent.setLocationComponentEnabled(true);
-
-// Set the component's camera mode
-            locationComponent.setCameraMode(CameraMode.TRACKING);
-
-// Set the component's render mode
-            locationComponent.setRenderMode(RenderMode.COMPASS);
-        } else {
-            permissionsManager = new PermissionsManager(this);
-            permissionsManager.requestLocationPermissions(this);
+    @Override
+    public void onStyleLoaded(@NonNull Style style) {
+        //add building plugin 3d
+        buildingPlugin = new BuildingPlugin(mapView, mapboxMap, style);
+        buildingPlugin.setMinZoomLevel(15f);
+        buildingPlugin.setVisibility(true);
+        try {
+            style.addSource(new GeoJsonSource("room-data", new URI("asset://indoor-3d-map.geojson")));
+            style.addLayer(new FillExtrusionLayer(
+                    "room-extrusion", "room-data").withProperties(
+                    fillExtrusionColor(get("color")),
+                    fillExtrusionHeight(get("height")),
+                    fillExtrusionBase(get("base_height")),
+                    fillExtrusionOpacity(0.5f)
+            ));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
+
+
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public void onExplanationNeeded(List<String> permissionsToExplain) {
-        Toast.makeText(this, R.string.user_location_permission_explanation,
-                Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onPermissionResult(boolean granted) {
-        if (granted) {
-            mapboxMap.getStyle(new Style.OnStyleLoaded() {
-                @Override
-                public void onStyleLoaded(@NonNull Style style) {
-                    enableLocationComponent(style);
-                }
-            });
-        } else {
-            Toast.makeText(this, R.string.user_location_permission_not_granted, Toast.LENGTH_LONG).show();
-            finish();
-        }
+    public LocationO getNewLatLong(double latitude, double longitude) {
+        double earth = 6378.137;
+        double pi = Math.PI;
+        double m = (1 / ((2 * pi / 360) * earth)) / 1000;  //1 meter in degree
+        double new_latitude = latitude + (10 * m);
+        double new_longitude = longitude + (10 * m) / Math.cos(latitude * (pi / 180));
+        LocationO locationO = new LocationO(new_latitude, new_longitude);
+        return locationO;
     }
 
     // Add the mapView lifecycle to the activity's lifecycle methods
@@ -219,9 +126,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mapboxMap != null) {
-            mapboxMap.removeOnCameraMoveListener(this);
-        }
         mapView.onDestroy();
     }
 
@@ -230,4 +134,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
+
+
 }
