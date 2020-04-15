@@ -56,10 +56,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         routeCoordinates = new ArrayList<>();
         routeCoordinates1 = new ArrayList<>();
         routeCoordinates2 = new ArrayList<>();
-        routeCoordinates.add(Point.fromLngLat(-118.39439114221236, 33.397676454651766));
-        routeCoordinates.add(Point.fromLngLat(-118.39421054012909, 33.3976979945487));
-        routeCoordinates1.add(Point.fromLngLat(-118.39438215905952,33.39766005386782));
-        routeCoordinates1.add(Point.fromLngLat(-118.39420155697618,33.397681593922364));
+        // 20.9962549 105.824648
+        routeCoordinates.add(Point.fromLngLat(105.824648, 20.9962549));
+        routeCoordinates.add(Point.fromLngLat(105.82585666018844, 20.99715321528412));
+        routeCoordinates1.add(Point.fromLngLat(105.82467217320718,20.996272866305684));
+        routeCoordinates1.add(Point.fromLngLat(105.82468425981588,20.996281849458526));
         routeCoordinates2.add(Point.fromLngLat(-118.39437317590668,33.39764365309173));
         routeCoordinates2.add(Point.fromLngLat(-118.39419257382335,33.397665193304206));
     }
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onStyleLoaded(@NonNull Style style) {
         initRouteCoordinates();
+        addBuilding3d(style);
         style.addSource(new GeoJsonSource("line-source",
                 FeatureCollection.fromFeatures(new Feature[]{Feature.fromGeometry(
                         LineString.fromLngLats(routeCoordinates)
@@ -82,6 +84,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 PropertyFactory.lineWidth(1f),
                 PropertyFactory.lineColor(Color.parseColor("#e55e5e"))
         ));
+    }
+
+    private void addBuilding3d(Style style) {
+        buildingPlugin = new BuildingPlugin(mapView, mapboxMap, style);
+        buildingPlugin.setMinZoomLevel(15f);
+        buildingPlugin.setVisibility(true);
     }
 
     public LatLng getNewLatLong(double latitude, double longitude) {
