@@ -59,10 +59,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // 20.9962549 105.824648
         routeCoordinates.add(Point.fromLngLat(105.824648, 20.9962549));
         routeCoordinates.add(Point.fromLngLat(105.82585666018844, 20.99715321528412));
-        routeCoordinates1.add(Point.fromLngLat(105.82467217320718,20.996272866305684));
-        routeCoordinates1.add(Point.fromLngLat(105.82468425981588,20.996281849458526));
-        routeCoordinates2.add(Point.fromLngLat(-118.39437317590668,33.39764365309173));
-        routeCoordinates2.add(Point.fromLngLat(-118.39419257382335,33.397665193304206));
+        routeCoordinates1.add(Point.fromLngLat(105.82466008694306,20.99716219843696));
+        routeCoordinates1.add(Point.fromLngLat(105.82586878159069,20.99806051372108));
+        routeCoordinates2.add(Point.fromLngLat(105.82467217423074,20.99806949687392));
+        routeCoordinates2.add(Point.fromLngLat(105.82588090334073,20.99896781215804));
     }
 
 
