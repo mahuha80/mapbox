@@ -59,12 +59,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // 20.9962549 105.824648
         routeCoordinates.add(Point.fromLngLat(105.824648, 20.9962549));
         routeCoordinates.add(Point.fromLngLat(105.82585666018844, 20.99715321528412));
-        routeCoordinates1.add(Point.fromLngLat(105.82466008694306,20.99716219843696));
-        routeCoordinates1.add(Point.fromLngLat(105.82586878159069,20.99806051372108));
-        routeCoordinates2.add(Point.fromLngLat(105.82467217423074,20.99806949687392));
-        routeCoordinates2.add(Point.fromLngLat(105.82588090334073,20.99896781215804));
+        routeCoordinates1.add(Point.fromLngLat(105.82466008694306, 20.99716219843696));
+        routeCoordinates1.add(Point.fromLngLat(105.82586878159069, 20.99806051372108));
+        routeCoordinates2.add(Point.fromLngLat(105.82467217423074, 20.99806949687392));
+        routeCoordinates2.add(Point.fromLngLat(105.82588090334073, 20.99896781215804));
     }
-
 
     @Override
     public void onStyleLoaded(@NonNull Style style) {
@@ -99,10 +98,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         double new_latitude = latitude + (10 * m);
         double new_longitude = longitude + (10 * m) / Math.cos(latitude * (pi / 90));
 
-        Log.e("TAG ",  "sss  " + new_latitude + "," + new_longitude);
+        Log.e("TAG ", "sss  " + new_latitude + "," + new_longitude);
         LatLng latLng = new LatLng(0, 0);
 
-        Log.e("TAG ",  "sss  " + latLng.toString());
+        Log.e("TAG ", "sss  " + latLng.toString());
         return latLng;
     }
 
